@@ -1,33 +1,54 @@
 package ra.model;
 
-import com.sun.org.apache.xml.internal.resolver.Catalog;
 
 public class Product {
-    private static int autoId = 0;
     private String productId, productName,description ;
     private double productPrice;
     private int stock;
     private Catalog catalog;
     private boolean status;
+
+    // Constructor không tham số
     public Product() {
-        this.productId = String.valueOf(++autoId);
+        this.status = true; // mặc định là true
     }
 
-    public Product(String productId, String productName, String description, double productPrice, int stock, Catalog catalog, boolean status) {
+    // Constructor có tham số
+    public Product(String productId, String productName, double productPrice, String description, int stock, Catalog catalog) {
+        if (productId == null || !productId.matches("P\\d{4}")) {
+            throw new IllegalArgumentException("Mã sản phẩm không hợp lệ.");
+        }
+        if (productName == null || productName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên sản phẩm không được để trống.");
+        }
+        if (productPrice <= 0) {
+            throw new IllegalArgumentException("Giá sản phẩm phải lớn hơn 0.");
+        }
+        if (stock < 10) {
+            throw new IllegalArgumentException("Số lượng sản phẩm phải ít nhất là 10.");
+        }
+        if (catalog == null) {
+            throw new IllegalArgumentException("Danh mục không được để null.");
+        }
+
         this.productId = productId;
         this.productName = productName;
-        this.description = description;
         this.productPrice = productPrice;
+        this.description = description;
         this.stock = stock;
         this.catalog = catalog;
-        this.status = status;
+        this.status = true; // mặc định là true
     }
 
+    // Getter và Setter
     public String getProductId() {
         return productId;
     }
 
     public void setProductId(String productId) {
+        if (productId == null || !productId.matches("P\\d{4}")) {
+            throw new IllegalArgumentException("Mã sản phẩm không hợp lệ.");
+        }
         this.productId = productId;
     }
 
@@ -36,7 +57,21 @@ public class Product {
     }
 
     public void setProductName(String productName) {
+        if (productName == null || productName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tên sản phẩm không được để trống.");
+        }
         this.productName = productName;
+    }
+
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(double productPrice) {
+        if (productPrice <= 0) {
+            throw new IllegalArgumentException("Giá sản phẩm phải lớn hơn 0.");
+        }
+        this.productPrice = productPrice;
     }
 
     public String getDescription() {
@@ -47,19 +82,14 @@ public class Product {
         this.description = description;
     }
 
-    public double getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(double productPrice) {
-        this.productPrice = productPrice;
-    }
-
     public int getStock() {
         return stock;
     }
 
     public void setStock(int stock) {
+        if (stock < 10) {
+            throw new IllegalArgumentException("Số lượng sản phẩm phải ít nhất là 10.");
+        }
         this.stock = stock;
     }
 
@@ -68,6 +98,9 @@ public class Product {
     }
 
     public void setCatalog(Catalog catalog) {
+        if (catalog == null) {
+            throw new IllegalArgumentException("Danh mục không được để null.");
+        }
         this.catalog = catalog;
     }
 
@@ -82,13 +115,12 @@ public class Product {
     @Override
     public String toString() {
         return
-                "productId='" + productId + '\'' +
-                ", productName='" + productName + '\'' +
-                ", description='" + description + '\'' +
-                ", productPrice=" + productPrice +
-                ", stock=" + stock +
-                ", catalog=" + catalog +
-                ", status=" + status
-                ;
+                "Product ID = " + productId  +
+                " | Name = " + productName +
+                " | Description =" + description +
+                " | Price = " + productPrice +
+                " | Stock = " + stock +
+                " | Catalog = " + catalog.getCatalogName() +
+                " | status = " + (status ? "Bán" : "Không bán");
     }
 }
